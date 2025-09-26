@@ -356,14 +356,27 @@ def plot_glass_flower(year: int = 2024,
         b.set_path_effects([
             pe.withStroke(linewidth=0.6, foreground=(col[0], col[1], col[2], alpha * 0.55))
         ])
+    # Wind streak overlay (进一步减弱视觉强度 -> “再淡一点”)
     if wind_intensity.size:
-        mask = wind_intensity > 0.15
+        # 自适应阈值：取中位数与 0.08 较大者，避免全部显示或全部消失
+        dynamic_thr = max(0.08, float(np.nanmedian(wind_intensity)) * 0.85)
+        mask = wind_intensity > dynamic_thr
         if np.any(mask):
-            streak_alpha = wind_intensity[mask] * 0.35
-            streak_colors = colors[mask] * np.array([0.85, 0.85, 0.95])
-            streak_rgba = [(c[0], c[1], c[2], a) for c, a in zip(streak_colors, streak_alpha)]
-            ax.bar(theta[:-1][mask], heights[mask] * 0.95, width=dtheta * 0.55, bottom=r_base,
-                   color=streak_rgba, linewidth=0, zorder=3, align='edge')
+            wi = wind_intensity[mask]
+            # 再次减弱：降低 alpha 量级 (≈ 0.06 ~ 0.28)
+            streak_alpha = 0.06 + 0.22 * (wi ** 0.8)
+            base_cols = colors[mask]
+            # 极轻微提亮：只混入 8% 白，并且不再额外偏蓝
+            mix = 0.08 + 0.92 * base_cols  # white mix 8%
+            streak_rgba = [(c[0], c[1], c[2], a) for c, a in zip(mix, streak_alpha)]
+            # 更窄 & 贴合原高度（略短 0.97 保留细边缘）
+            wind_bars = ax.bar(theta[:-1][mask], heights[mask] * 0.97, width=dtheta * 0.42, bottom=r_base,
+                               color=streak_rgba, linewidth=0, zorder=3, align='edge')
+            # 取消明显描边，仅留极淡描边（或直接注释掉下面两行可彻底无描边）
+            for wb in wind_bars:
+                wb.set_path_effects([
+                    pe.withStroke(linewidth=0.25, foreground=(1, 1, 1, 0.08))
+                ])
 
     # Day ticks (optional monthly markers)
     month_starts = []
