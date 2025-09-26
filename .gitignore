@@ -1,0 +1,15 @@
+﻿# Cache & bytecode
+__pycache__/
+.cache/
+
+# Large binaries / drivers
+chromedriver.exe
+
+# Generated images / exports
+*.png
+*.svg
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
