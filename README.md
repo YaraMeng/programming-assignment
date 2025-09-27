@@ -2,19 +2,27 @@
 
 A radial "Climate Flower" visualization: each day of the year is a petal (365 petals). Petal length encodes mean temperature, color & transparency encode rainfall (dry amber → wet deep blue), and subtle narrow inner streaks mark higher wind days.
 
-![Sample](glass_flower_2024.png)
+<!-- Static raster preview -->
+![Sample PNG](glass_flower_2024.png)
+
+<!-- Vector preview (SVG) -->
+<p align="center">
+	<img src="glass_flower_2024.svg" alt="Climate Flower SVG" width="420" />
+</p>
 
 ## Quick Start
 ```bash
-# (Optional) create venv
+# 1. (Optional) create venv
 python -m venv .venv
-./.venv/Scripts/activate  # Windows PowerShell
+./.venv/Scripts/Activate.ps1   # Windows PowerShell
 
-pip install -r requirements.txt  # if you later add a file; currently only numpy, requests, matplotlib, mplcursors
+# 2. Install dependencies
+pip install -r requirements.txt
 
+# 3. Run
 python climateFlower.py
 ```
-The script fetches (or synthesizes) daily data for 2024, caches under `.cache/`, and opens an interactive window (hover to see daily stats).
+The script fetches (or synthesizes) daily data for 2024, caches under `.cache/`, and opens an interactive window (hover for daily stats).
 
 ## Features (Summary)
 - 365 radial bars (Jan 1 at top, clockwise) with glassy layered glow.

@@ -1,0 +1,8 @@
+# Core scientific / plotting stack
+numpy==2.3.3          # numeric arrays & stats
+matplotlib==3.10.6    # plotting (polar bars, interactivity backend)
+requests==2.32.5      # HTTP fetch for Open-Meteo API
+mplcursors==0.7       # hover tooltips (optional but enabled by default)
+
+# (Optional) If you run into font issues on some systems you might also add:
+# pillow==10.4.0      # for some image backends
