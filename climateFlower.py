@@ -1,4 +1,5 @@
 import os
+import calendar
 import datetime
 from typing import Dict, Any, Tuple, Optional
 
@@ -393,10 +394,52 @@ def plot_glass_flower(year: int = 2024,
             ax.plot([ang, ang], [r_base * 0.9, r_max], color=guide_col,
                     linewidth=0.7, zorder=2.6, solid_capstyle='round')
     ax.set_xticks([theta[i] for i in month_starts])
-    ax.set_xticklabels([dates[i].strftime('%m') for i in month_starts], color=(0.9, 0.92, 0.96), fontsize=10)
+    # 使用英文月份缩写 (Jan, Feb, ...) 而不是数字；calendar.month_abbr[1..12]
+    month_labels = [calendar.month_abbr[dates[i].month].upper() for i in month_starts]
+    ax.set_xticklabels(month_labels, color=(0.9, 0.92, 0.96), fontsize=10)
 
-    title = f"Glass Climate Flower {year}\nLength=Temp  Color/Alpha=Rain  Streak=Wind"
+    # Title 按需求改为简单形式
+    title = f"Climate Flower of {year}"
     ax.set_title(title, fontsize=18, pad=18, color=(0.92, 0.95, 1))
+
+    # （原底部副标题移除，改为右侧说明块）
+
+    # 角落数据来源与年份标记（右下）
+    source_txt = f"Data: open-meteo (cached)  •  Year: {year}"
+    fig.text(0.995, 0.01, source_txt, ha='right', va='bottom', fontsize=8.5, color='#9aa4b5', alpha=0.9)
+
+    # 简要图例（自定义方块/线）
+    from matplotlib.lines import Line2D
+    # 仅保留颜色(干/湿)说明，放到右侧空白区
+    color_legend = [
+        Line2D([0],[0], marker='s', markersize=11, linestyle='None',
+               markerfacecolor=(1.0,0.85,0.40,0.70), markeredgecolor='none', label='Dry (low rain)'),
+        Line2D([0],[0], marker='s', markersize=11, linestyle='None',
+               markerfacecolor=(0.05,0.22,0.65,0.90), markeredgecolor='none', label='Wet (high rain)')
+    ]
+    # 右侧顶部放颜色图例，下面竖排对齐文字说明
+    leg = ax.legend(handles=color_legend,
+                    loc='upper left',
+                    bbox_to_anchor=(1.08, 0.90),  # 右侧靠上
+                    frameon=False,
+                    fontsize=10,
+                    labelcolor='#d0d5df',
+                    borderaxespad=0.)
+    if leg:
+     for txt in leg.get_texts():
+         txt.set_color('#d0d5df')
+    # 与图例左边界对齐的编码说明文本块
+    info_lines = [
+        "Length: Temperature mean",
+        "Color/Alpha: Rain",
+        "Narrow Streak: Stronger Wind"
+    ]
+    base_y = 0.80  # 起始 y（轴坐标系）
+    line_h = 0.055
+    for k, line in enumerate(info_lines):
+        ax.text(1.08, base_y - k*line_h, line,
+                transform=ax.transAxes,
+                ha='left', va='top', fontsize=9.2, color='#cfd4dd')
     plt.tight_layout()
     if save_path:
         base, ext = os.path.splitext(save_path)
