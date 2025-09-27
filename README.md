@@ -22,7 +22,9 @@ pip install -r requirements.txt
 # 3. Run
 python climateFlower.py
 ```
-The script fetches (or synthesizes) daily data for 2024, caches under `.cache/`, and opens an interactive window (hover for daily stats).
+The script fetches (or synthesizes) daily data for 2024, caches under `.cache/`, and opens an interactive window.
+
+Hover behaviour now uses a lightweight custom `motion_notify_event` handler (no `mplcursors` dependency): move over a petal to see a transient tooltip (date / temp / rain / max wind); move away and it disappears immediately.
 
 ## Features (Summary)
 - 365 radial bars (Jan 1 at top, clockwise) with glassy layered glow.
@@ -30,7 +32,7 @@ The script fetches (or synthesizes) daily data for 2024, caches under `.cache/`,
 - Color + alpha = rainfall (robust p90 scaling).
 - Subtle wind streak bars (filtered by adaptive threshold).
 - Month labels (JAN–DEC) and faint month-start guide lines.
-- Hover tooltip (date, temperature, rain, max wind) + light highlight.
+- Hover tooltip (date, temperature, rain, max wind) + light highlight (custom event-based, not mplcursors).
 - Caching of API responses to speed reruns; synthetic fallback if API fails.
 
 ## Export
